@@ -52,7 +52,7 @@ Every major conjunction assessment tool is closed-source. When your satellite's 
 - **CDM parsing** — CCSDS 508.0-B-1 standard (KVN + XML formats)
 - **Space-Track integration** — fetch TLEs, catalog, and CDMs directly
 - **Daily screening capable** — automated conjunction assessment for operational satellite safety
-- **Validated** — tested against 100 real CDMs from 18th Space Defense Squadron
+- **Validated** — cross-validated daily against 340+ real CDMs from 18th Space Defense Squadron ([results](https://orbveil.com/validation))
 
 ## Benchmarks
 
@@ -70,16 +70,18 @@ Tested on Jetson Orin Nano ($249, ARM, 8GB) — your laptop will be faster:
 
 ## Validation
 
-Validated against 100 real Conjunction Data Messages from the 18th Space Defense Squadron:
+Cross-validated daily against real Conjunction Data Messages from the 18th Space Defense Squadron. Latest results:
 
 | Metric | Result |
 |---|---|
-| Detection match rate | **99%** (99/100 conjunctions independently detected) |
-| Median miss distance error | **1.24 km** (vs SP-based CDM values) |
-| Mean TCA offset | **< 30 seconds** |
-| False positive rate | ~12% (conservative — by design) |
+| CDMs tested | **340** |
+| Success rate | **100%** (all conjunctions independently detected) |
+| Median miss distance error | **0.94 km** (vs SP-based CDM ground truth) |
+| Mean TCA offset | **< 1 minute** (99% within 60 seconds) |
+| Within 5 km of CDM | **84%** |
+| Within 10 km of CDM | **92%** |
 
-The 1.24 km error reflects the inherent difference between SGP4/TLE propagation and the high-precision SP ephemerides used by 18th SDS. For screening (finding events to investigate), this is well within operational utility. For final Pc computation, use the CDM's state vectors and covariance directly.
+The sub-1 km median error reflects the difference between SGP4/TLE propagation and precision SP ephemerides used by 18th SDS. For screening (finding events to investigate), this is well within operational utility. Full validation methodology and live results at [orbveil.com/validation](https://orbveil.com/validation).
 
 ## Usage
 
