@@ -1,3 +1,3 @@
 from __future__ import annotations
 
-"""OrbitGuard API client for the hosted service."""
+"""OrbVeil API client for the hosted service."""

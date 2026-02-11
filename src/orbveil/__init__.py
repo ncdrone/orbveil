@@ -1,5 +1,5 @@
 """
-OrbitGuard — Satellite conjunction assessment for Python.
+OrbVeil — Satellite conjunction assessment for Python.
 
 Open-source library for screening conjunctions, parsing CDMs,
 and computing collision probability. Built for operators who

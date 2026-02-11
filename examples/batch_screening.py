@@ -1,13 +1,13 @@
-"""OrbitGuard Batch Screening — screen an entire constellation.
+"""OrbVeil Batch Screening — screen an entire constellation.
 
 This example demonstrates the class-based API for advanced workflows.
-Requires a running OrbitGuard API instance or API key.
+Requires a running OrbVeil API instance or API key.
 """
 
-from orbitguard import OrbitGuard
+from orbveil import OrbVeil
 
 # Initialize with API key
-og = OrbitGuard(api_key="og_live_your_key_here")
+og = OrbVeil(api_key="og_live_your_key_here")
 
 # Load your constellation's catalog
 # catalog = og.load_catalog(operator="STARLINK")
@@ -23,5 +23,5 @@ og = OrbitGuard(api_key="og_live_your_key_here")
 #         print(f"   Miss distance: {event.miss_distance_km:.2f} km")
 #         print(f"   Pc: {event.probability:.2e}")
 
-print("Batch screening will be available in OrbitGuard v0.2.")
-print("Sign up at https://orbitguard.dev for early access.")
+print("Batch screening will be available in OrbVeil v0.2.")
+print("Sign up at https://orbveil.dev for early access.")

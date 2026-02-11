@@ -1,6 +1,6 @@
-"""OrbitGuard hosted API client.
+"""OrbVeil hosted API client.
 
-Provides a high-level interface to the OrbitGuard cloud service for
+Provides a high-level interface to the OrbVeil cloud service for
 operators who want managed screening without running infrastructure.
 """
 
@@ -17,16 +17,16 @@ _DEFAULT_BASE_URL = "https://api.orbveil.dev"
 
 
 @dataclass
-class OrbitGuard:
-    """Client for the OrbitGuard hosted API.
+class OrbVeil:
+    """Client for the OrbVeil hosted API.
 
     Args:
-        api_key: Your OrbitGuard API key (starts with ``og_``).
+        api_key: Your OrbVeil API key (starts with ``og_``).
         base_url: API base URL. Defaults to production.
 
     Example::
 
-        og = OrbitGuard(api_key="og_live_abc123")
+        og = OrbVeil(api_key="og_live_abc123")
         catalog = og.load_catalog(operator="STARLINK")
         events = og.screen(catalog, threshold=1e-5)
     """
@@ -35,7 +35,7 @@ class OrbitGuard:
     base_url: str = _DEFAULT_BASE_URL
 
     def load_catalog(self, *, operator: str | None = None) -> list[TLE]:
-        """Load a TLE catalog from the OrbitGuard service.
+        """Load a TLE catalog from the OrbVeil service.
 
         Args:
             operator: Filter by operator name.
@@ -47,7 +47,7 @@ class OrbitGuard:
             NotImplementedError: The hosted API is not yet available.
         """
         raise NotImplementedError(
-            "The OrbitGuard hosted API is coming soon. "
+            "The OrbVeil hosted API is coming soon. "
             "Sign up at https://orbveil.dev for early access."
         )
 
@@ -72,6 +72,6 @@ class OrbitGuard:
             NotImplementedError: The hosted API is not yet available.
         """
         raise NotImplementedError(
-            "The OrbitGuard hosted API is coming soon. "
+            "The OrbVeil hosted API is coming soon. "
             "Sign up at https://orbveil.dev for early access."
         )

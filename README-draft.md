@@ -2,7 +2,7 @@
 
 **Open-source satellite conjunction screening for Python.**
 
-Screen the full public catalog for close approaches, compute collision probability, parse CDMs. Built for engineers who need transparency in safety-critical decisions.
+Screen the full public catalog for close approaches, compute collision probability, parse CDMs. Built for satellite operators who need transparency in safety-critical decisions.
 
 [![PyPI](https://img.shields.io/pypi/v/orbveil?color=blue)](https://pypi.org/project/orbveil/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -46,12 +46,10 @@ Every major conjunction assessment tool is closed-source. When your satellite's 
 
 ## What It Does
 
-- **Full catalog screening** — 30,070 objects (active satellites, debris, rocket bodies, unknown objects) in ~15-20 seconds via KD-tree spatial indexing + batch SGP4
-- **Debris-on-payload screening** — identify threats from rocket bodies, defunct satellites, and tracked debris
+- **Full catalog screening** — 14,368 objects in 5.8 seconds via KD-tree spatial indexing + batch SGP4
 - **Collision probability** — Foster (1992) analytical method + Monte Carlo sampling
 - **CDM parsing** — CCSDS 508.0-B-1 standard (KVN + XML formats)
 - **Space-Track integration** — fetch TLEs, catalog, and CDMs directly
-- **Daily screening capable** — automated conjunction assessment for operational satellite safety
 - **Validated** — tested against 100 real CDMs from 18th Space Defense Squadron
 
 ## Benchmarks
@@ -60,10 +58,10 @@ Tested on Jetson Orin Nano ($249, ARM, 8GB) — your laptop will be faster:
 
 | Operation | Scale | Time |
 |---|---|---|
-| Full catalog propagation (batch SGP4) | 30,070 objects | ~40 ms |
-| Orbital shell prefilter | 30,070 → ~800 | <1 ms |
-| KD-tree construction | ~800 objects × 168 steps | ~80 ms |
-| Conjunction screening (7 days) | 1 vs full catalog | ~15-20 sec |
+| Full catalog propagation (batch SGP4) | 14,368 objects | 19 ms |
+| Orbital shell prefilter | 14,368 → ~500 | <1 ms |
+| KD-tree construction | ~500 objects × 168 steps | ~50 ms |
+| Conjunction screening (7 days) | 1 vs full catalog | 5.8 sec |
 | Collision probability (Foster 1992) | 1 event | <1 ms |
 | Collision probability (Monte Carlo, 100k) | 1 event | ~200 ms |
 | CDM parsing (KVN) | 1 message | <1 ms |
@@ -128,18 +126,18 @@ cdms = client.fetch_cdms(days=7)
 ### Screening Pipeline
 
 ```
-Full catalog (30,070 objects: active, debris, rocket bodies, unknown)
+Full catalog (14,368 objects)
     │
     ▼
 ┌─────────────────────────┐
 │ Orbital Shell Prefilter  │  Compare apogee/perigee bounds
 │ ~85% eliminated          │  No propagation needed
 └─────────────────────────┘
-    │ ~800 candidates
+    │ ~500 candidates
     ▼
 ┌─────────────────────────┐
 │ Batch SGP4 Propagation   │  SatrecArray (C-level, vectorized)
-│ 168 time steps (7 days)  │  ~40ms for full catalog
+│ 168 time steps (7 days)  │  19ms for full catalog
 └─────────────────────────┘
     │
     ▼
@@ -183,7 +181,7 @@ Being honest about what OrbVeil is and isn't:
 - **No maneuver planning** — we tell you about conjunctions, not how to avoid them.
 - **Single-threaded** — fast enough for single-satellite operations, not optimized for constellation-scale screening (6,000+ primaries).
 - **No atmospheric drag modeling beyond SGP4's built-in** — during geomagnetic storms, TLE accuracy degrades.
-- **Not a replacement for operational CA services** — 18th SDS and commercial providers use SP ephemerides with much higher fidelity. OrbVeil is for independent screening, research, education, and small teams.
+- **Not a replacement for operational CA services** — 18th SDS and commercial providers use SP ephemerides with much higher fidelity. OrbVeil is for independent screening, research, education, and small operators.
 
 ## Roadmap
 
@@ -204,24 +202,8 @@ You need a TLE catalog file. Options:
    client = SpaceTrackClient(identity="you@email.com", password="pw")
    catalog = client.fetch_catalog()
    ```
-2. **CelesTrak** — `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle` (active satellites only)
-3. **CelesTrak Full Catalog** — `https://celestrak.org/NORAD/elements/gp.php?SPECIAL=gp-index&FORMAT=tle` (all 30K+ objects)
-4. **Your own TLE file** — any standard two-line element format
-
-## Data Sources
-
-OrbVeil screens the complete public catalog from trusted sources:
-
-- **TLE Data**: CelesTrak and Space-Track.org provide Two-Line Element sets maintained by the 18th Space Defense Squadron (formerly JSpOC)
-- **Full Catalog**: 30,070 tracked objects including:
-  - Active satellites (payloads)
-  - Rocket bodies (spent upper stages)
-  - Debris (collision fragments, mission-related objects)
-  - Unknown/unclassified objects
-- **Object Classification**: SATCAT (Satellite Catalog) metadata provides object type, launch date, country, and operational status
-- **CDMs**: Conjunction Data Messages from Space-Track.org provide high-fidelity state vectors and covariance for close approaches detected by 18 SDS
-
-This comprehensive approach ensures debris-on-payload screening — identifying threats from defunct satellites and orbital debris that represent the majority of conjunction risk.
+2. **CelesTrak** — `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle`
+3. **Your own TLE file** — any standard two-line element format
 
 ## Development
 
