@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orbveil"
+version = "0.1.0-dev"
+description = "Collision avoidance for satellite operators. Screen conjunctions, estimate collision probability, and protect your constellation."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [{ name = "Autmori", email = "hello@autmori.com" }]
+keywords = ["space", "satellites", "conjunction", "collision-avoidance", "ssa", "sgp4"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+    "sgp4>=2.22",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+gpu = ["torch>=2.0"]
+batch = ["polars>=0.20"]
+all = ["orbveil[gpu,batch]"]
+dev = ["pytest>=7.0", "pytest-cov", "ruff", "mypy"]
+
+[project.urls]
+Homepage = "https://orbveil.dev"
+Documentation = "https://docs.orbveil.dev"
+Repository = "https://github.com/ncdrone/orbveil"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orbveil"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
