@@ -1,8 +1,8 @@
-# 🛰️ OrbitGuard
+# 🛰️ OrbVeil
 
 **Open-source satellite conjunction screening for Python.**
 
-Screen the full public catalog for close approaches, compute collision probability, parse CDMs. Built for satellite operators who need transparency in safety-critical decisions.
+Screen the full public catalog for close approaches, compute collision probability, parse CDMs. Built for engineers who need transparency in safety-critical decisions.
 
 [![PyPI](https://img.shields.io/pypi/v/orbveil?color=blue)](https://pypi.org/project/orbveil/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -26,11 +26,11 @@ for e in events:
     print(f"NORAD {e.secondary_norad_id}: {e.miss_distance_km:.2f} km at {e.tca}")
 ```
 
-## Why OrbitGuard?
+## Why OrbVeil?
 
 Every major conjunction assessment tool is closed-source. When your satellite's safety depends on a collision probability number, you should be able to read the code that computed it.
 
-| | OrbitGuard | Orekit | poliastro | AGI STK | CARA (18 SDS) |
+| | OrbVeil | Orekit | poliastro | AGI STK | CARA (18 SDS) |
 |---|---|---|---|---|---|
 | **Language** | Python | Java | Python (archived) | C++/.NET | Internal |
 | **Open source** | ✅ Apache 2.0 | ✅ Apache 2.0 | ✅ (archived) | ❌ Commercial | ❌ Gov only |
@@ -40,9 +40,9 @@ Every major conjunction assessment tool is closed-source. When your satellite's 
 | **Install** | `pip install` | Maven + config | `pip install` | Installer | N/A |
 | **Scope** | CA-focused | Full astrodynamics | General orbital mechanics | Everything | CA operations |
 
-**OrbitGuard's niche:** Python-native, pip-installable, focused entirely on conjunction assessment. No JVM, no XML configuration, no license keys. Five lines to screen a satellite.
+**OrbVeil's niche:** Python-native, pip-installable, focused entirely on conjunction assessment. No JVM, no XML configuration, no license keys. Five lines to screen a satellite.
 
-> **Note:** poliastro, the main Python orbital mechanics library, [was archived in 2024](https://github.com/poliastro/poliastro). OrbitGuard fills the conjunction assessment gap in the Python space ecosystem.
+> **Note:** poliastro, the main Python orbital mechanics library, [was archived in 2024](https://github.com/poliastro/poliastro). OrbVeil fills the conjunction assessment gap in the Python space ecosystem.
 
 ## What It Does
 
@@ -176,14 +176,14 @@ Full catalog (30,070 objects: active, debris, rocket bodies, unknown)
 
 ## Limitations
 
-Being honest about what OrbitGuard is and isn't:
+Being honest about what OrbVeil is and isn't:
 
 - **SGP4/TLE only** — no high-precision numerical propagation (SP). Position errors grow with propagation time (~1 km at epoch, worse at 7 days). This is inherent to TLE data, not a bug.
 - **No orbit determination** — we don't generate covariance from observations. Covariance comes from CDMs or user input.
 - **No maneuver planning** — we tell you about conjunctions, not how to avoid them.
 - **Single-threaded** — fast enough for single-satellite operations, not optimized for constellation-scale screening (6,000+ primaries).
 - **No atmospheric drag modeling beyond SGP4's built-in** — during geomagnetic storms, TLE accuracy degrades.
-- **Not a replacement for operational CA services** — 18th SDS and commercial providers use SP ephemerides with much higher fidelity. OrbitGuard is for independent screening, research, education, and small operators.
+- **Not a replacement for operational CA services** — 18th SDS and commercial providers use SP ephemerides with much higher fidelity. OrbVeil is for independent screening, research, education, and small operators.
 
 ## Roadmap
 
@@ -210,7 +210,7 @@ You need a TLE catalog file. Options:
 
 ## Data Sources
 
-OrbitGuard screens the complete public catalog from trusted sources:
+OrbVeil screens the complete public catalog from trusted sources:
 
 - **TLE Data**: CelesTrak and Space-Track.org provide Two-Line Element sets maintained by the 18th Space Defense Squadron (formerly JSpOC)
 - **Full Catalog**: 30,070 tracked objects including:
