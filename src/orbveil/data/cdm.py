@@ -13,9 +13,9 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 import numpy as np
+from numpy.typing import NDArray
 
 logger = logging.getLogger(__name__)
-from numpy.typing import NDArray
 
 
 @dataclass

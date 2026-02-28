@@ -6,11 +6,12 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 import numpy as np
-
-logger = logging.getLogger(__name__)
 from numpy.typing import NDArray
 from sgp4.api import Satrec, SatrecArray, jday
+
 from orbveil.core.tle import TLE
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass

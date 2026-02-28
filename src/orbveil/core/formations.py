@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -57,12 +56,7 @@ def detect_formations(
     n_objects = len(names)
     formations = []
     assigned = set()  # Track which objects are already in a formation
-    
-    # Build lookup dictionaries
-    name_to_idx = {i: names[i] for i in range(n_objects)}
-    norad_to_idx = {norad_ids[i]: i for i in range(n_objects)}
-    idx_to_norad = {i: norad_ids[i] for i in range(n_objects)}
-    
+
     # 1. Check for ISS complex
     iss_indices = []
     for i in range(n_objects):

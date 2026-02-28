@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Physical constants and default thresholds for orbital mechanics.
 
 Units follow astrodynamics convention (km, km/s, km³/s²) unless otherwise noted.
 """
+
+from __future__ import annotations
 
 # --- Earth parameters (WGS-84) ---
 EARTH_RADIUS_KM: float = 6378.137

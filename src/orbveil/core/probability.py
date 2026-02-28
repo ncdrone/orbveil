@@ -11,10 +11,10 @@ from dataclasses import dataclass
 from enum import Enum
 
 import numpy as np
-
-logger = logging.getLogger(__name__)
 from numpy.typing import NDArray
 from scipy.integrate import dblquad
+
+logger = logging.getLogger(__name__)
 
 
 class PcMethod(Enum):
