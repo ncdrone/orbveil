@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from orbveil.core.risk import RiskAssessment, assess_risk, classify_events
+from orbveil.core.risk import RiskAssessment, RiskCategory, assess_risk, classify_events
 
 
 class TestRiskAssessment:
@@ -18,9 +18,9 @@ class TestRiskAssessment:
             obj1_maneuverable=True,  # At least one can maneuver
         )
         assert result.score >= 80, "Extremely close approach should be CRITICAL"
-        assert result.category == "CRITICAL"
+        assert result.category == RiskCategory.CRITICAL
         assert "IMMEDIATE ACTION" in result.recommendation
-    
+
     def test_zero_distance_collision(self):
         """Test edge case: zero distance (collision)."""
         result = assess_risk(
@@ -28,7 +28,7 @@ class TestRiskAssessment:
             relative_velocity_km_s=10.0,
         )
         assert result.score >= 80, "Zero distance should be CRITICAL"
-        assert result.category == "CRITICAL"
+        assert result.category == RiskCategory.CRITICAL
     
     def test_zero_velocity_docked(self):
         """Test edge case: zero velocity (docked/formation flying)."""
@@ -39,7 +39,7 @@ class TestRiskAssessment:
         # High distance score, but low velocity score
         assert result.score > 0
         # Should still be concerning due to very close distance
-        assert result.category in ["CRITICAL", "HIGH", "MEDIUM"]
+        assert result.category in [RiskCategory.CRITICAL, RiskCategory.HIGH, RiskCategory.MEDIUM]
     
     def test_very_high_velocity(self):
         """Test edge case: very high velocity (>10 km/s)."""
@@ -48,8 +48,8 @@ class TestRiskAssessment:
             relative_velocity_km_s=15.0,
         )
         assert result.score >= 70, "Very high velocity + close approach = high risk"
-        assert result.category in ["CRITICAL", "HIGH"]
-    
+        assert result.category in [RiskCategory.CRITICAL, RiskCategory.HIGH]
+
     def test_safe_distance(self):
         """Test scenario: safe distance (>25 km)."""
         result = assess_risk(
@@ -58,7 +58,7 @@ class TestRiskAssessment:
             obj1_maneuverable=True,  # At least one can maneuver
         )
         assert result.score < 20, "Large separation should be NEGLIGIBLE"
-        assert result.category == "NEGLIGIBLE"
+        assert result.category == RiskCategory.NEGLIGIBLE
     
     def test_iss_maneuverable_large(self):
         """Test ISS-like scenario: large maneuverable satellite."""
@@ -150,11 +150,11 @@ class TestRiskAssessment:
         """Test that score thresholds map correctly to categories."""
         # Test boundary conditions
         scenarios = [
-            (0.1, 10.0, "LARGE", "LARGE", False, False, "CRITICAL"),  # Should be >=80
-            (4.5, 5.0, "LARGE", "MEDIUM", False, False, "HIGH"),      # Should be >=60
-            (6.0, 5.0, "MEDIUM", "MEDIUM", False, False, "MEDIUM"),   # Should be >=40
-            (8.0, 5.0, "SMALL", "SMALL", True, True, "LOW"),          # Should be >=20
-            (30.0, 2.0, "SMALL", "SMALL", True, True, "NEGLIGIBLE"),  # Should be <20
+            (0.1, 10.0, "LARGE", "LARGE", False, False, RiskCategory.CRITICAL),    # Should be >=80
+            (4.5, 5.0, "LARGE", "MEDIUM", False, False, RiskCategory.HIGH),        # Should be >=60
+            (6.0, 5.0, "MEDIUM", "MEDIUM", False, False, RiskCategory.MEDIUM),     # Should be >=40
+            (8.0, 5.0, "SMALL", "SMALL", True, True, RiskCategory.LOW),            # Should be >=20
+            (30.0, 2.0, "SMALL", "SMALL", True, True, RiskCategory.NEGLIGIBLE),    # Should be <20
         ]
         
         for distance, velocity, rcs1, rcs2, m1, m2, expected_cat in scenarios:
@@ -224,8 +224,8 @@ class TestRiskAssessment:
         assert len(results) == 3
         assert all(isinstance(r, RiskAssessment) for r in results)
         assert results[0].score > results[1].score > results[2].score
-        assert results[0].category in ["CRITICAL", "HIGH"]
-        assert results[2].category in ["NEGLIGIBLE", "LOW"]
+        assert results[0].category in [RiskCategory.CRITICAL, RiskCategory.HIGH]
+        assert results[2].category in [RiskCategory.NEGLIGIBLE, RiskCategory.LOW]
     
     def test_risk_assessment_dataclass_fields(self):
         """Test that RiskAssessment contains all required fields."""
@@ -243,7 +243,7 @@ class TestRiskAssessment:
         assert hasattr(result, "recommendation")
         
         assert isinstance(result.score, float)
-        assert isinstance(result.category, str)
+        assert isinstance(result.category, RiskCategory)
         assert isinstance(result.factors, dict)
         assert isinstance(result.recommendation, str)
         
@@ -268,8 +268,8 @@ class TestRiskAssessment:
             tca=tca,
         )
         assert result.score <= 100.0
-        assert result.category == "CRITICAL"
-    
+        assert result.category == RiskCategory.CRITICAL
+
     def test_large_objects_increase_risk(self):
         """Test that larger RCS increases risk score."""
         result_small = assess_risk(

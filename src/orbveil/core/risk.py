@@ -4,18 +4,29 @@ import logging
 import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from enum import Enum
 
 logger = logging.getLogger(__name__)
+
+
+class RiskCategory(Enum):
+    """Severity level for a conjunction risk assessment."""
+
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    NEGLIGIBLE = "NEGLIGIBLE"
 
 
 @dataclass
 class RiskAssessment:
     score: float          # 0-100
-    category: str         # CRITICAL/HIGH/MEDIUM/LOW/NEGLIGIBLE
+    category: RiskCategory
     miss_distance_km: float
     relative_velocity_km_s: float
     time_to_tca_hours: float | None
-    factors: dict         # breakdown of contributing factors
+    factors: dict[str, float]  # breakdown of contributing factors
     recommendation: str   # human-readable action recommendation
 
 
@@ -201,37 +212,37 @@ def _calculate_urgency_multiplier(time_to_tca_hours: float) -> float:
         return 1.0
 
 
-def _categorize_score(score: float) -> str:
+def _categorize_score(score: float) -> RiskCategory:
     """Categorize risk score into severity levels."""
     if score >= 80:
-        return "CRITICAL"
+        return RiskCategory.CRITICAL
     elif score >= 60:
-        return "HIGH"
+        return RiskCategory.HIGH
     elif score >= 40:
-        return "MEDIUM"
+        return RiskCategory.MEDIUM
     elif score >= 20:
-        return "LOW"
+        return RiskCategory.LOW
     else:
-        return "NEGLIGIBLE"
+        return RiskCategory.NEGLIGIBLE
 
 
-def _generate_recommendation(category: str, obj1_maneuverable: bool, obj2_maneuverable: bool) -> str:
+def _generate_recommendation(category: RiskCategory, obj1_maneuverable: bool, obj2_maneuverable: bool) -> str:
     """Generate human-readable action recommendation."""
     can_maneuver = obj1_maneuverable or obj2_maneuverable
     
-    if category == "CRITICAL":
+    if category == RiskCategory.CRITICAL:
         if can_maneuver:
             return "IMMEDIATE ACTION REQUIRED: Execute collision avoidance maneuver now"
         else:
             return "CRITICAL ALERT: Neither object can maneuver - coordinate with operators immediately"
-    elif category == "HIGH":
+    elif category == RiskCategory.HIGH:
         if can_maneuver:
             return "Continuous monitoring required - prepare collision avoidance maneuver"
         else:
             return "High risk event - coordinate tracking and assessment with all operators"
-    elif category == "MEDIUM":
+    elif category == RiskCategory.MEDIUM:
         return "Monitor conjunction closely and update assessment as tracking improves"
-    elif category == "LOW":
+    elif category == RiskCategory.LOW:
         return "Maintain awareness - routine monitoring sufficient"
     else:
         return "Negligible risk - standard catalog maintenance"
