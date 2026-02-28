@@ -17,7 +17,7 @@ from sgp4.earth_gravity import wgs72
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TLE:
     """A parsed Two-Line Element set.
 

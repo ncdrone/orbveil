@@ -18,7 +18,7 @@ from numpy.typing import NDArray
 logger = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class CDMObject:
     """One object's data within a CDM."""
 
@@ -39,7 +39,7 @@ class CDMObject:
     covariance: NDArray[np.float64] | None  # shape (6,6), None if not provided
 
 
-@dataclass
+@dataclass(slots=True)
 class CDM:
     """A parsed Conjunction Data Message."""
 

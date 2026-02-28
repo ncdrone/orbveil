@@ -19,7 +19,7 @@ class RiskCategory(Enum):
     NEGLIGIBLE = "NEGLIGIBLE"
 
 
-@dataclass
+@dataclass(slots=True)
 class RiskAssessment:
     score: float          # 0-100
     category: RiskCategory

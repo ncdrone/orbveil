@@ -17,7 +17,7 @@ from orbveil.utils.constants import EARTH_MU_KM3_S2 as MU, EARTH_RADIUS_KM as RE
 logger = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class ConjunctionEvent:
     """A predicted close approach between two space objects.
 
@@ -116,7 +116,8 @@ def screen(
     """
     primaries = [primary] if isinstance(primary, TLE) else primary
 
-    all_events: list[ConjunctionEvent] = []
+    # Use dict keyed by (prim_id, sec_id) -> list of events for O(1) duplicate lookup
+    events_by_pair: dict[tuple[int, int], list[ConjunctionEvent]] = {}
 
     for prim in primaries:
         candidates = _prefilter(catalog, prim, threshold_km)
@@ -176,11 +177,13 @@ def screen(
                 )
 
                 if min_dist <= threshold_km:
+                    pair_key = (prim.norad_id, sec_norad_id)
+                    existing_list = events_by_pair.get(pair_key, [])
+
+                    # Check for duplicate (same pair, TCA within 300s)
                     duplicate = False
-                    for existing in all_events:
-                        if (existing.primary_norad_id == prim.norad_id and
-                                existing.secondary_norad_id == sec_norad_id and
-                                abs((existing.tca - tca).total_seconds()) < 300):
+                    for existing in existing_list:
+                        if abs((existing.tca - tca).total_seconds()) < 300:
                             if min_dist < existing.miss_distance_km:
                                 existing.tca = tca
                                 existing.miss_distance_km = min_dist
@@ -189,16 +192,16 @@ def screen(
                             break
 
                     if not duplicate:
-                        all_events.append(
-                            ConjunctionEvent(
-                                primary_norad_id=prim.norad_id,
-                                secondary_norad_id=sec_norad_id,
-                                tca=tca,
-                                miss_distance_km=min_dist,
-                                relative_velocity_km_s=rel_vel,
-                            )
+                        event = ConjunctionEvent(
+                            primary_norad_id=prim.norad_id,
+                            secondary_norad_id=sec_norad_id,
+                            tca=tca,
+                            miss_distance_km=min_dist,
+                            relative_velocity_km_s=rel_vel,
                         )
+                        events_by_pair.setdefault(pair_key, []).append(event)
 
+    all_events = [e for events in events_by_pair.values() for e in events]
     all_events.sort(key=lambda e: e.miss_distance_km)
     return all_events
 

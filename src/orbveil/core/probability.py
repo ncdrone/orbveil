@@ -24,7 +24,7 @@ class PcMethod(Enum):
     MONTE_CARLO = "monte_carlo"
 
 
-@dataclass
+@dataclass(slots=True)
 class PcResult:
     """Result of a collision probability calculation.
 

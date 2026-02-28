@@ -7,7 +7,7 @@ from dataclasses import dataclass
 logger = logging.getLogger(__name__)
 
 
-@dataclass
+@dataclass(slots=True)
 class FormationGroup:
     """Represents a group of satellites flying in formation or co-located."""
     name: str                    # e.g., "ISS Complex", "PIESAT Formation"

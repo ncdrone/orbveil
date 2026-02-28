@@ -14,7 +14,7 @@ from orbveil.core.tle import TLE
 logger = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StateVector:
     """Position and velocity in TEME frame.
 
