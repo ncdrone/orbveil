@@ -11,10 +11,10 @@ from dataclasses import dataclass, field
 
 import requests
 
-logger = logging.getLogger(__name__)
-
 from orbveil.core.tle import TLE, parse_tle
 from orbveil.data.cdm import CDM
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -35,6 +35,16 @@ class SpaceTrackClient:
 
     BASE_URL = "https://www.space-track.org"
     LOGIN_URL = f"{BASE_URL}/ajaxauth/login"
+
+    def close(self) -> None:
+        """Close the underlying HTTP session."""
+        self._session.close()
+
+    def __enter__(self) -> SpaceTrackClient:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        self.close()
 
     def _login(self) -> None:
         """Authenticate with Space-Track.
