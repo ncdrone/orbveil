@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Physical constants and default thresholds for orbital mechanics.
 
-All values in SI units unless otherwise noted.
+Units follow astrodynamics convention (km, km/s, km³/s²) unless otherwise noted.
 """
 
 # --- Earth parameters (WGS-84) ---

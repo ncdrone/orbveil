@@ -29,7 +29,7 @@ class SpaceTrackClient:
     """
 
     identity: str
-    password: str
+    password: str = field(repr=False)
     _session: requests.Session = field(default_factory=requests.Session, repr=False)
     _authenticated: bool = field(default=False, repr=False)
 
@@ -164,11 +164,12 @@ class SpaceTrackClient:
         url_parts = [
             f"{self.BASE_URL}/basicspacedata/query/class/cdm_public"
         ]
-        
+
         if norad_id is not None:
             url_parts.append(f"SAT_1_ID/{norad_id}")
-        
+
         url_parts.extend([
+            f"TCA/>now-{days}",
             "orderby/TCA desc",
             "limit/100",
             "format/kvn"
